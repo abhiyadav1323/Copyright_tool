@@ -1,0 +1,50 @@
+#!/bin/bash
+
+# copyright is written in "copyright.txt" file. 
+# files to be excluded is written in "remove.txt" file with full path.
+# arguments to copyright function:-
+# variable 1 is file name
+# variable 2 is prefix for sed
+# variable 3 is suffix for sed
+# variable 4 is prefix for echo
+# variable 5 is prefix for echo 
+# variable 6 is sentinel to be added before each line of copyright
+
+function copyright()
+{
+  sed -e 's/^/'"$6"'/' copyright.txt > copyright_cmt.txt
+  value=$(<copyright_cmt.txt)
+  file=$1
+  sed -i '/'"$2"'/,/'"$3"'/d' $file
+  echo -e "$4"'\n'"$value"'\n'"$5" > copyright-file.txt;
+  cat $file >> copyright-file.txt;
+  mv copyright-file.txt $file;
+}
+
+# variable containing different extensions 
+list1="sh yml rb coffee properties"
+list2="c cpp h js java"
+list3="html php xml xsd erb"
+list4="css scss scssc"
+
+fexclude=$(<remove.txt)
+
+for file in $(find . -type f); do
+	ext=$(echo ${file##*.}) # extension of a file
+	fname=$(readlink -f "$file") # full path of a file
+  if grep -w "$fname" <<< "$fexclude"; then
+  	echo $fname;
+  elif grep -w "$ext" <<< "$list2"; then
+  	copyright $file '\/\/\$\$\$' '\/\/\$\$\$' '//$$$' '//$$$' '\/\/'
+  elif grep -w "$ext" <<< "$list1"; then
+  	copyright $file '#\$\$\$' '#\$\$\$' '#$$$' '#$$$' '#'
+  elif grep -w "$ext" <<< "$list3"; then
+ 	copyright $file '<!--\$\$\$' '\$\$\$-->' '<!--$$$' '$$$-->' '*'
+  elif [[ ("$ext" = "bat") ]]; then
+    copyright $file '::\$\$\$' '::\$\$\$' '::$$$' '::$$$' '::'
+  elif grep -w "$ext" <<< "$list4"; then
+    copyright $file '\/\*\$\$\$' '\$\$\$\*\/' '/*$$$' '$$$*/' '*'
+  fi
+done
+
+rm copyright_cmt.txt  # removing copyright_cmt file created by copyright function
