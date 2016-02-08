@@ -1,0 +1,7 @@
+/home/abhishek/Desktop/a/1/2.cpp
+/home/abhishek/Desktop/a/1/2.php
+/home/abhishek/Desktop/a/1/2.rb
+/home/abhishek/Desktop/a/1/2.scss
+/home/abhishek/Desktop/a/1/3/1.rb
+/home/abhishek/Desktop/a/1/2/1.c
+/home/abhishek/Desktop/a/1/copyright_tool.sh
